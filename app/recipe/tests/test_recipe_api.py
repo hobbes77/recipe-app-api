@@ -72,7 +72,7 @@ class PrivateRecipeApiTests(TestCase):
 
         res = self.client.get(RECIPES_URL)
 
-        recipes = Recipe.objects.all().order_by('id')
+        recipes = Recipe.objects.all().order_by('-id')
         serializer = RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
@@ -107,13 +107,13 @@ class PrivateRecipeApiTests(TestCase):
         """Test creating a recipe."""
         payload = {
             'title': 'Sample recipe',
-            'time_minues': 30,
+            'time_minutes': 30,
             'price': Decimal('5.99'),
         }
         res = self.client.post(RECIPES_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=res.data['id'])
-        for k.v in payload.items():
-            self.assertEqual(getattr(recipe. k), v)
+        for k, v in payload.items():
+            self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
